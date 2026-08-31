@@ -30,20 +30,32 @@ class SurveyResponseListView(generics.ListAPIView):
             survey_id=self.kwargs["survey_id"]
         )
 
-
 class SurveyAnalyticsView(APIView):
 
     def get(self, request, survey_id):
         survey = Survey.objects.get(id=survey_id)
-        responses = SurveyResponse.objects.filter(survey=survey)
+        responses = SurveyResponse.objects.filter(
+            survey=survey
+        ).order_by("-submitted_at")
 
         analytics = {
             "total_responses": responses.count(),
+            "responses": [],
             "questions": []
         }
 
+        # Individual responses
+        for response in responses:
+            analytics["responses"].append({
+                "id": str(response.id),
+                "answers": response.answers,
+                "submitted_at": response.submitted_at,
+            })
+
+        # Question analytics
         for question in survey.schema.get("questions", []):
             question_id = question["id"]
+
             values = [
                 response.answers.get(question_id)
                 for response in responses
@@ -69,12 +81,13 @@ class SurveyAnalyticsView(APIView):
                 result["counts"] = dict(counts)
 
             elif question["type"] == "rating":
-                if values:
-                    result["average"] = round(
-                        sum(values) / len(values), 2
-                    )
-                else:
-                    result["average"] = 0
+                result["average"] = (
+                    round(sum(values) / len(values), 2)
+                    if values
+                    else 0
+                )
+
+                result["counts"] = dict(Counter(values))
 
             elif question["type"] == "text":
                 result["responses"] = values
