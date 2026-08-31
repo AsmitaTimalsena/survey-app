@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import CreateSurvey from "./pages/CreateSurvey";
 import SurveyForm from "./pages/SurveyForm";
@@ -8,9 +10,13 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AdminDashboard />} />
-        <Route path="/admin/create" element={<CreateSurvey />} />
+        {/* Public */}
+        <Route path="/" element={<Home />} />
         <Route path="/survey/:id" element={<SurveyForm />} />
+
+        {/* Admin */}
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/create" element={<CreateSurvey />} />
         <Route path="/admin/analytics/:id" element={<Analytics />} />
       </Routes>
     </BrowserRouter>
