@@ -1,3 +1,5 @@
+import { Card, Form, Button, Row, Col, InputGroup, Badge } from "react-bootstrap";
+
 const QuestionEditor = ({
   question,
   index,
@@ -54,165 +56,206 @@ const QuestionEditor = ({
   );
 
   return (
-    <div className="question-editor">
-      <h3>Question {index + 1}</h3>
+    <Card className="border-0 shadow-sm mb-4" style={{ borderRadius: "12px" }}>
+      <Card.Body className="p-4">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h5 style={{ color: "#6a5af9", fontWeight: 600, margin: 0 }}>
+            Question {index + 1}
+          </h5>
 
-      {/* Question text */}
-      <input
-        type="text"
-        placeholder="Question text"
-        value={question.text}
-        onChange={(e) => update("text", e.target.value)}
-        required
-      />
+          <div className="d-flex gap-2">
+            <Button
+              type="button"
+              variant="outline-secondary"
+              size="sm"
+              disabled={index === 0}
+              onClick={() => onMove(index, -1)}
+            >
+              ↑
+            </Button>
 
-      {/* Question type */}
-      <select
-        value={question.type}
-        onChange={(e) => {
-          const type = e.target.value;
+            <Button
+              type="button"
+              variant="outline-secondary"
+              size="sm"
+              disabled={index === total - 1}
+              onClick={() => onMove(index, 1)}
+            >
+              ↓
+            </Button>
 
-          const updatedQuestion = {
-            ...question,
-            type,
-          };
-
-          if (type === "single_choice" || type === "multiple_choice") {
-            updatedQuestion.options = question.options || [
-              "Option 1",
-              "Option 2",
-            ];
-          } else {
-            delete updatedQuestion.options;
-          }
-
-          onUpdate(question.id, updatedQuestion);
-        }}
-      >
-        <option value="text">Text Input</option>
-        <option value="single_choice">Multiple Choice</option>
-        <option value="multiple_choice">Checkbox</option>
-        <option value="rating">Rating (1–5)</option>
-      </select>
-
-      {/* Options */}
-      {(question.type === "single_choice" ||
-        question.type === "multiple_choice") && (
-        <div>
-          <h4>Options</h4>
-
-          {question.options.map((option, i) => (
-            <div key={i}>
-              <input
-                type="text"
-                value={option}
-                onChange={(e) => updateOption(i, e.target.value)}
-              />
-
-              <button
-                type="button"
-                onClick={() => removeOption(i)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-
-          <button type="button" onClick={addOption}>
-            + Add Option
-          </button>
+            <Button
+              type="button"
+              variant="outline-danger"
+              size="sm"
+              onClick={() => onRemove(question.id)}
+            >
+              Delete
+            </Button>
+          </div>
         </div>
-      )}
 
-      {/* Required */}
-      <label>
-        <input
-          type="checkbox"
-          checked={question.required}
-          onChange={(e) => update("required", e.target.checked)}
-        />
-        Required
-      </label>
+        {/* Question text */}
+        <Form.Group className="mb-3">
+          <Form.Label style={{ fontWeight: 500, color: "#444" }}>
+            Question Text
+          </Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter your question"
+            value={question.text}
+            onChange={(e) => update("text", e.target.value)}
+            required
+          />
+        </Form.Group>
 
-      {/* Conditional Logic */}
-      {/* Conditional Logic */}
-{previousQuestions.some(
-  (q) =>
-    q.type === "single_choice" ||
-    q.type === "multiple_choice"
-) && (
-  <div>
-    <h4>Conditional Logic</h4>
+        {/* Question type */}
+        <Form.Group className="mb-3">
+          <Form.Label style={{ fontWeight: 500, color: "#444" }}>
+            Question Type
+          </Form.Label>
+          <Form.Select
+            value={question.type}
+            onChange={(e) => {
+              const type = e.target.value;
 
-    <select
-      value={question.condition?.question_id || ""}
-      onChange={(e) => setConditionQuestion(e.target.value)}
-    >
-      <option value="">No condition</option>
+              const updatedQuestion = {
+                ...question,
+                type,
+              };
 
-      {previousQuestions
-        .filter(
-          (q) =>
-            q.type === "single_choice" ||
-            q.type === "multiple_choice"
-        )
-        .map((q) => (
-          <option key={q.id} value={q.id}>
-            {q.text || "Untitled question"}
-          </option>
-        ))}
-    </select>
+              if (type === "single_choice" || type === "multiple_choice") {
+                updatedQuestion.options = question.options || [
+                  "Option 1",
+                  "Option 2",
+                ];
+              } else {
+                delete updatedQuestion.options;
+              }
 
-    {/* Condition value */}
-    {question.condition?.question_id &&
-      conditionQuestion && (
-        <select
-          value={question.condition.value}
-          onChange={(e) =>
-            update("condition", {
-              ...question.condition,
-              value: e.target.value,
-            })
-          }
-        >
-          <option value="">Select value</option>
+              onUpdate(question.id, updatedQuestion);
+            }}
+          >
+            <option value="text">Text Input</option>
+            <option value="single_choice">Multiple Choice</option>
+            <option value="multiple_choice">Checkbox</option>
+            <option value="rating">Rating (1–5)</option>
+          </Form.Select>
+        </Form.Group>
 
-          {conditionQuestion.options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      )}
-  </div>
-)}
+        {/* Options */}
+        {(question.type === "single_choice" ||
+          question.type === "multiple_choice") && (
+          <Form.Group className="mb-3">
+            <Form.Label style={{ fontWeight: 500, color: "#444" }}>
+              Options
+            </Form.Label>
 
-      {/* Reorder / Delete */}
-      <div>
-        <button
-          type="button"
-          disabled={index === 0}
-          onClick={() => onMove(index, -1)}
-        >
-          ↑
-        </button>
+            {question.options.map((option, i) => (
+              <InputGroup key={i} className="mb-2">
+                <Form.Control
+                  type="text"
+                  value={option}
+                  onChange={(e) => updateOption(i, e.target.value)}
+                />
 
-        <button
-          type="button"
-          disabled={index === total - 1}
-          onClick={() => onMove(index, 1)}
-        >
-          ↓
-        </button>
+                <Button
+                  type="button"
+                  variant="outline-danger"
+                  onClick={() => removeOption(i)}
+                >
+                  Remove
+                </Button>
+              </InputGroup>
+            ))}
 
-        <button
-          type="button"
-          onClick={() => onRemove(question.id)}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
+            <Button
+              type="button"
+              variant="outline-secondary"
+              size="sm"
+              onClick={addOption}
+              className="mt-1"
+            >
+              + Add Option
+            </Button>
+          </Form.Group>
+        )}
+
+        {/* Required */}
+        <Form.Group className="mb-3">
+          <Form.Check
+            type="checkbox"
+            id={`${question.id}-required`}
+            label="Required"
+            checked={question.required}
+            onChange={(e) => update("required", e.target.checked)}
+          />
+        </Form.Group>
+
+        {/* Conditional Logic */}
+        {previousQuestions.some(
+          (q) => q.type === "single_choice" || q.type === "multiple_choice"
+        ) && (
+          <div
+            className="p-3 mb-2"
+            style={{ backgroundColor: "#f8f7ff", borderRadius: "10px" }}
+          >
+            <Badge
+              className="mb-2"
+              style={{ backgroundColor: "#6a5af9", fontWeight: 500 }}
+            >
+              Conditional Logic
+            </Badge>
+
+            <Row className="g-2">
+              <Col md={conditionQuestion ? 6 : 12}>
+                <Form.Select
+                  value={question.condition?.question_id || ""}
+                  onChange={(e) => setConditionQuestion(e.target.value)}
+                >
+                  <option value="">No condition</option>
+
+                  {previousQuestions
+                    .filter(
+                      (q) =>
+                        q.type === "single_choice" ||
+                        q.type === "multiple_choice"
+                    )
+                    .map((q) => (
+                      <option key={q.id} value={q.id}>
+                        {q.text || "Untitled question"}
+                      </option>
+                    ))}
+                </Form.Select>
+              </Col>
+
+              {/* Condition value */}
+              {question.condition?.question_id && conditionQuestion && (
+                <Col md={6}>
+                  <Form.Select
+                    value={question.condition.value}
+                    onChange={(e) =>
+                      update("condition", {
+                        ...question.condition,
+                        value: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select value</option>
+
+                    {conditionQuestion.options.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
+            </Row>
+          </div>
+        )}
+      </Card.Body>
+    </Card>
   );
 };
 

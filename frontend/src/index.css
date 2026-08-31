@@ -78,3 +78,14 @@ input[type="checkbox"] {
   max-width: 400px;
   margin: 20px auto;
 }
+
+.survey-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.survey-card button {
+  margin-left: 0;
+}
