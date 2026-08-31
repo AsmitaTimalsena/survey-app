@@ -21,7 +21,6 @@ export const createSurvey = async (survey) => {
 
   return response.json();
 };
-
 export const submitResponse = async (surveyId, answers) => {
   const response = await fetch(
     `${API_URL}/surveys/${surveyId}/responses/`,
@@ -32,10 +31,19 @@ export const submitResponse = async (surveyId, answers) => {
       },
       body: JSON.stringify({
         survey: surveyId,
-        answers,
+        answers: answers,
       }),
     }
   );
 
-  return response.json();
+  const data = await response.json();
+
+  console.log("Response status:", response.status);
+  console.log("Response data:", data);
+
+  if (!response.ok) {
+    throw new Error(JSON.stringify(data));
+  }
+
+  return data;
 };

@@ -44,3 +44,37 @@ input[type="checkbox"] {
   width: auto;
   margin-right: 8px;
 }
+
+.analytics-summary {
+  padding: 25px;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.response-count {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.response-card,
+.analytics-card {
+  padding: 25px;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.answer-row {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.answer-row p {
+  margin-top: 5px;
+}
+
+.chart-container {
+  max-width: 400px;
+  margin: 20px auto;
+}

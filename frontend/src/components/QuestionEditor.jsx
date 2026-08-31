@@ -135,48 +135,57 @@ const QuestionEditor = ({
       </label>
 
       {/* Conditional Logic */}
-      {index > 0 && previousQuestions.length > 0 && (
-        <div>
-          <h4>Conditional Logic</h4>
+      {/* Conditional Logic */}
+{previousQuestions.some(
+  (q) =>
+    q.type === "single_choice" ||
+    q.type === "multiple_choice"
+) && (
+  <div>
+    <h4>Conditional Logic</h4>
 
-          <select
-            value={question.condition?.question_id || ""}
-            onChange={(e) => setConditionQuestion(e.target.value)}
-          >
-            <option value="">Always show</option>
+    <select
+      value={question.condition?.question_id || ""}
+      onChange={(e) => setConditionQuestion(e.target.value)}
+    >
+      <option value="">No condition</option>
 
-            {previousQuestions.map((q) => (
-              <option key={q.id} value={q.id}>
-                {q.text || `Question ${previousQuestions.indexOf(q) + 1}`}
-              </option>
-            ))}
-          </select>
+      {previousQuestions
+        .filter(
+          (q) =>
+            q.type === "single_choice" ||
+            q.type === "multiple_choice"
+        )
+        .map((q) => (
+          <option key={q.id} value={q.id}>
+            {q.text || "Untitled question"}
+          </option>
+        ))}
+    </select>
 
-          {/* Condition value */}
-          {question.condition?.question_id &&
-            conditionQuestion &&
-            (conditionQuestion.type === "single_choice" ||
-              conditionQuestion.type === "multiple_choice") && (
-              <select
-                value={question.condition.value}
-                onChange={(e) =>
-                  update("condition", {
-                    ...question.condition,
-                    value: e.target.value,
-                  })
-                }
-              >
-                <option value="">Select value</option>
+    {/* Condition value */}
+    {question.condition?.question_id &&
+      conditionQuestion && (
+        <select
+          value={question.condition.value}
+          onChange={(e) =>
+            update("condition", {
+              ...question.condition,
+              value: e.target.value,
+            })
+          }
+        >
+          <option value="">Select value</option>
 
-                {conditionQuestion.options.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            )}
-        </div>
+          {conditionQuestion.options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
       )}
+  </div>
+)}
 
       {/* Reorder / Delete */}
       <div>
