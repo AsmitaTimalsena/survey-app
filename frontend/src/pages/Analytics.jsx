@@ -31,6 +31,7 @@ const CHART_COLORS = [
   "#ffb703",
   "#95d5b2",
 ];
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Analytics = () => {
   const { id } = useParams();
@@ -38,7 +39,7 @@ const Analytics = () => {
   const [analytics, setAnalytics] = useState(null);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/surveys/${id}/analytics/`)
+    fetch(`${API_URL}/surveys/${id}/analytics/`)
       .then((res) => res.json())
       .then(setAnalytics);
   }, [id]);
